@@ -1,6 +1,18 @@
 # JavaScript - Promises and Generators, Pipelines, Streaming Analyses, First past the Post
 This document walks you through Promises and how to use them easily in an seemingly synchronous, imperative way using *await* and *async* functions. It then introduces *generator functions*  that return sets of data, one element at a time - thereby allowing unending streams of events to be processed almost as simple arrays of data. The finishing touch in this article consists of *aysnchronous generator functions* (introduced in ES 2018); these make it possible to return results from asynchronous operations from a generator, paving the way for pipelining: multiple functions chained together, each processing results from their predecessor and passing their result onto their successor in the chain. Thanks to the parallel processing that is now possible within the pipeline, first results can be produced much earlier one and in a more elegant way, with far less use of memory resources. It may not be sliced bread, but it is pretty cool all the same.
 
+## How to get going?
+To follow along the code samples in this hands on, you will need a recent Node runtime environment (Node 10 or higher). There are several options to proceed:
+* install a local Node runtime on your laptop, git clone the repository and run the *.js files (for example from Visual Studio Code)
+* run a Docker Container based on the Node image, for example:
+    * `docker run --name=node -it node:12 /bin/sh`, 
+    * then clone the GitHub repo with `git clone https://github.com/AMIS-Services/code-cafe-20190520`, 
+    * cd into the right folder `cd code-cafe-20190520/javascript-asynchronous-generators`
+    * and run the various *.js files
+* make use of a cloud based runtime environment, for example
+    * Go to [Katacoda - NodeJS playground](https://www.katacoda.com/kameshveera3/scenarios/2) and clone the GitHub repo with `git clone https://github.com/AMIS-Services/code-cafe-20190520`, cd into the right folder `cd code-cafe-20190520/javascript-asynchronous-generators` and run the various *.js files; 
+    * Go to [Paiza Cloud](https://paiza.cloud/containers); start a Node server; git clone the repository and run the files.
+
 ## Recap of Promises
 A Promise [in JavaScript] is like a coupon, voucher or claim tag (Gutschein, IOU, Consumptiebon): it is light weight and easily acquired and it holds the promise of a future result. That future result is the outcome of an asynchronous action. If you are new to Promises, this is a very clear, straightforward tutorial [https://javascript.info/promise-basics].
 
