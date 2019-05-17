@@ -50,7 +50,7 @@ Check if both containers are running: `docker ps`
 
 Now open a web browser and go to http://localhost:8080
 
-![phpmyadmin_local_login](/img/phpmyadmin_local_login.png)
+![phpmyadmin_local_login](img/phpmyadmin_local_login.png)
 
 Try to login as db_user.
 
@@ -72,7 +72,7 @@ Type: `exit` and `exit` again to return to your local command prompt.
 
 Now try again to login.
 
-![phpmyadmin_local_homepage](/img/phpmyadmin_local_homepage.png)
+![phpmyadmin_local_homepage](img/phpmyadmin_local_homepage.png)
 
 If you go to the Databases tab you will see the `db` database without any tables.
 
@@ -96,7 +96,7 @@ Press the `Create a resource` link in the left sidebar.
 
 Search for `Resource Group` .
 
-![](/img/azure_create_resource_group.png)
+![](img/azure_create_resource_group.png)
 
 Press the `Create` button.
 
@@ -118,7 +118,7 @@ Lets create the container.
 
 Press the `Create a resource` link again and search for `container instance` or let's do it another way. Because you can navigate to the home tab of all your container instances by pressing the `All Services` link in the side bar and search for `container instances`.  If you click on the star next to the Container instances services, the link to the home tab will be added to the side bar.
 
- ![](/img/azure_services_container_instances.png)
+ ![](img/azure_services_container_instances.png)
 
 Now press the `Container instance` link and the home tab for all container instances will be shown.
 
@@ -136,7 +136,7 @@ Set OS Type to Linux.
 
 And leave the size to 1 cpu and 1.5 GB.
 
-![](/img/azure_create_container_mysql_1.png)
+![](img/azure_create_container_mysql_1.png)
 
 Press Next.
 
@@ -150,7 +150,7 @@ Press Next.
 
 On the next page enter the same environment variables you used when creating the container locally.
 
- ![](/img/azure_create_container_mysql_3.png)
+ ![](img/azure_create_container_mysql_3.png)
 
 Press Review+Create.
 
@@ -158,7 +158,7 @@ Press Create.
 
 The container will now be created.
 
-![](/img/azure_create_container_mysql_deploy.png)
+![](img/azure_create_container_mysql_deploy.png)
 
 When ready click on `Go to resource`.
 
@@ -166,7 +166,7 @@ Make a note of the FQDN (the DNS name the container can be accessed on). We need
 
 Now add another container for PHPMyAdmin.
 
-![](/img/azure_create_container_phpmyadmin_1.png)
+![](img/azure_create_container_phpmyadmin_1.png)
 
 On the networking tab leave the port tot 80 (currently it is not possible to map a container port to another port as we do locally).
 
@@ -180,7 +180,7 @@ PMA_HOST = <dns name of the mysql container>
 
 PMA_PORT = 3306
 
-![](/img/azure_create_container_phpmyadmin_3.png)
+![](img/azure_create_container_phpmyadmin_3.png)
 
 And create the container.
 
@@ -188,7 +188,7 @@ Also here we will have the same issue with authentication.
 
 Go to the db1 container and open the `Container` subpage and then the `Connect` tab.
 
-![](/img/azure_container_instance_mysql_connect.png)
+![](img/azure_container_instance_mysql_connect.png)
 
 Select /bin/bash and press Connect.
 
