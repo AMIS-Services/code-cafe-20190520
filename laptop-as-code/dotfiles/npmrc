@@ -1,0 +1,13 @@
+# init.author.name=My Name
+# init.author.email=me@amis.nl
+init.author.url=http://amis.nl
+init.license=ISC
+init.version=0.0.1
+progress=true
+
+#silent, error, warn, http, info, verbose, and silly.
+loglevel=warn
+
+#registry=https://registry.npmjs.com/
+# Set a registry for a scoped package
+@amis:registry=https://build.amis.nl

@@ -1,0 +1,11 @@
+Host *
+    ServerAliveInterval 60
+    ServerAliveCountMax 2
+    # Forward ssh agent to the remote machine.
+    # SSH agent forwarding can be used to make deploying to a server behind a bastion simple.
+    # It allows you to use your local SSH keys instead of leaving keys sitting on your bastion server.
+    # Intentionally disabled this for all servers, because I do not want to share it to everyone
+    # Consider ProxyCommand (OpenSSH) if you want to hop servers
+    ForwardAgent no
+    # Set to "no" to automatically add all common hosts to the host file as they are connected to.
+    StrictHostKeyChecking no

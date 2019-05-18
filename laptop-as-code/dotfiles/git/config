@@ -1,0 +1,24 @@
+# git config --list --show-origin
+
+[core]
+  autocrlf = true
+[push]
+	default = matching
+[advice]
+  statusHints = false
+[include]
+  path = config.aliases
+  path = config.ui
+  path = config.merge
+  path = config.user
+[includeIf "gitdir:projects/"]
+  path = config.personal
+[includeIf "gitdir:projects/amis/"]
+  path = config.amis
+[credential]
+	helper = manager
+[difftool "sourcetree"]
+	cmd = '' \"$LOCAL\" \"$REMOTE\"
+[mergetool "sourcetree"]
+	cmd = "'' "
+	trustExitCode = true

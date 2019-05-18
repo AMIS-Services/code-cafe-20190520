@@ -1,0 +1,349 @@
+test -f ~/.profile && . ~/.profile
+test -f ~/.bashrc && . ~/.bashrc
+
+#  ---------------------------------------------------------------------------
+#
+#  Description:  This file holds all my BASH configurations and aliases
+#
+#  Sections:
+#  1.   Environment Configuration
+#  2.   Make Terminal Better (remapping defaults and adding functionality)
+#  3.   File and Folder Management
+#  4.   Searching
+#  5.   Process Management
+#  6.   Networking
+#  7.   System Operations & Information
+#  8.   Development
+#  9.   Auto completions
+#  10.  Reminders & Notes
+#
+#  ---------------------------------------------------------------------------
+
+#   -------------------------------
+#   1.  ENVIRONMENT CONFIGURATION
+#   -------------------------------
+
+#   Change Prompt
+#   ------------------------------------------------------------
+#    export PS1="________________________________________________________________________________\n| \w @ \h (\u) \n| => "
+#    export PS2="| => "
+
+function parse_aws_profile() {
+      [ -n "$AWS_DEFAULT_PROFILE" ] && echo "AWS($AWS_DEFAULT_PROFILE)"
+    }
+
+function parse_branch() {
+   parse_svn_branch && parse_git_branch
+}
+
+function parse_svn_branch() {
+   (head -5 .svn/entries | tail -1 | sed 's!'`head -6 .svn/entries|tail -1`'!!') 2>/dev/null | sed -e 's/\/\(.*\)/SVN(\1)/'
+}
+
+function parse_git_branch() {
+   git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/GIT(\1)/'
+}
+
+#Prompt and prompt colors
+# 30m - Black
+# 31m - Red
+# 32m - Green
+# 33m - Yellow
+# 34m - Blue
+# 35m - Purple
+# 36m - Cyan
+# 37m - White
+# 0 - Normal
+# 1 - Bold
+function prompt {
+  local RESET="\[\e[0m\]"
+
+  # Background
+  local ON_BLACK="\[\033[40m\]"
+  local ON_RED="\[\033[41m\]"
+  local ON_GREEN="\[\033[42m\]"
+  local ON_YELLOW="\[\033[43m\]"
+  local ON_BLUE="\[\033[44m\]"
+  local ON_PURPLE="\[\033[45m\]"
+  local ON_CYAN="\[\033[46m\]"
+  local ON_WHITE="\[\033[47m\]"
+
+  # Regular
+  local BLACK="\[\033[0;30m\]"
+  local RED="\[\033[0;31m\]"
+  local GREEN="\[\033[0;32m\]"
+  local YELLOW="\[\033[0;33m\]"
+  local BLUE="\[\033[0;34m\]"
+  local PURPLE="\[\033[0;35m\]"
+  local CYAN="\[\033[0;36m\]"
+  local WHITE="\[\033[0;37m\]"
+
+  # Bold
+  local B_BLACK="\[\033[1;30m\]"
+  local B_RED="\[\033[1;31m\]"
+  local B_GREEN="\[\033[1;32m\]"
+  local B_YELLOW="\[\033[1;33m\]"
+  local B_BLUE="\[\033[1;34m\]"
+  local B_PURPLE="\[\033[1;35m\]"
+  local B_CYAN="\[\033[1;36m\]"
+  local B_WHITE="\[\033[1;37m\]"
+
+  # Underline
+  local U_BLACK="\[\033[4;30m\]"
+  local U_RED="\[\033[4;31m\]"
+  local U_GREEN="\[\033[4;32m\]"
+  local U_YELLOW="\[\033[4;33m\]"
+  local U_BLUE="\[\033[4;34m\]"
+  local U_PURPLE="\[\033[4;35m\]"
+  local U_CYAN="\[\033[4;36m\]"
+  local U_WHITE="\[\033[4;37m\]"
+
+  # High Intensty
+  local I_BLACK="\[\033[0;90m\]"
+  local I_RED="\[\033[0;91m\]"
+  local I_GREEN="\[\033[0;92m\]"
+  local I_YELLOW="\[\033[0;93m\]"
+  local I_BLUE="\[\033[0;94m\]"
+  local I_PURPLE="\[\033[0;95m\]"
+  local I_CYAN="\[\033[0;96m\]"
+  local I_WHITE="\[\033[0;97m\]"
+
+  # Bold High Intensty
+  local BI_BLACK="\[\033[1;90m\]"
+  local BI_RED="\[\033[1;91m\]"
+  local BI_GREEN="\[\033[1;92m\]"
+  local BI_YELLOW="\[\033[1;93m\]"
+  local BI_BLUE="\[\033[1;94m\]"
+  local BI_PURPLE="\[\033[1;95m\]"
+  local BI_CYAN="\[\033[1;96m\]"
+  local BI_WHITE="\[\033[1;97m\]"
+
+#  export      PS1="\n$WHITE[\t] $BLUE\u $WHITE@ $GREEN\H$WHITE:\$PWD $CYAN\$(parse_branch) $WHITE$ "
+#  export SUDO_PS1="\n$WHITE[\t] $ON_BLUE$BI_WHITE\u$WHITE @ $GREEN\H$WHITE:\$PWD\n# "
+}
+prompt
+
+#   Set Paths
+#   ------------------------------------------------------------
+#   export PATH="$PATH:/usr/local/bin/"
+export PATH=$PATH:$HOME/.local/bin:$HOME/bin
+
+#   Set Default Editor (change 'Nano' to the editor of your choice)
+#   ------------------------------------------------------------
+export EDITOR=/usr/bin/nano
+
+#   Set default blocksize for ls, df, du
+#   ------------------------------------------------------------
+    export BLOCKSIZE=1k
+
+#   Add color to terminal
+#   ------------------------------------------------------------
+#   export CLICOLOR=1
+#   export LSCOLORS=ExFxBxDxCxegedabagacad
+
+#   Set locale in terminal
+#   ------------------------------------------------------------
+export LC_CTYPE=en_US.UTF-8
+#export LC_ALL=en_US.UTF-8
+#export LANG=en_US.UTF-8
+
+#   Set history in terminal
+#   ------------------------------------------------------------
+export HISTCONTROL=erasedups       # Erase duplicates in history
+export HISTSIZE=10000              # Store 10k history entries
+shopt -s histappend                # Append to the history file when exiting instead of overwriting it
+# Make some commands not show up in history
+export HISTIGNORE="ls:cd:cd -:pwd;exit:date:* --help"
+
+#   Set grep color in terminal
+#   ------------------------------------------------------------
+export GREP_COLOR=32 # nice green!
+
+#   -----------------------------
+#   2.  MAKE TERMINAL BETTER
+#   -----------------------------
+
+alias cp='cp -iv'                           # Preferred 'cp' implementation
+alias mv='mv -iv'                           # Preferred 'mv' implementation
+alias mkdir='mkdir -pv'                     # Preferred 'mkdir' implementation
+alias ll='ls -FGlAhp'                       # Preferred 'ls' implementation
+alias grep='grep --color=auto'
+# alias less='less -FSRXc'                    # Preferred 'less' implementation
+# cd() { builtin cd "$@"; ll; }               # Always list directory contents upon 'cd'
+alias cd..='cd ../'                         # Go back 1 directory level (for fast typers)
+alias ..='cd ../'                           # Go back 1 directory level
+alias ...='cd ../../'                       # Go back 2 directory levels
+alias .3='cd ../../../'                     # Go back 3 directory levels
+alias .4='cd ../../../../'                  # Go back 4 directory levels
+alias .5='cd ../../../../../'               # Go back 5 directory levels
+alias .6='cd ../../../../../../'            # Go back 6 directory levels
+alias edit='subl'                           # edit:         Opens any file in sublime editor
+alias ~="cd ~"                              # ~:            Go Home
+alias c='clear'                             # c:            Clear terminal display
+alias which='type -all'                     # which:        Find executables
+alias path='echo -e ${PATH//:/\\n}'         # path:         Echo all executable Paths
+alias show_options='shopt'                  # Show_options: display bash options settings
+alias fix_stty='stty sane'                  # fix_stty:     Restore terminal settings when screwed up
+alias cic='set completion-ignore-case On'   # cic:          Make tab-completion case-insensitive
+mcd () { mkdir -p "$1" && cd "$1"; }        # mcd:          Makes new Dir and jumps inside
+
+#   lr:  Full Recursive Directory Listing
+#   ------------------------------------------
+alias lr='ls -R | grep ":$" | sed -e '\''s/:$//'\'' -e '\''s/[^-][^\/]*\//--/g'\'' -e '\''s/^/   /'\'' -e '\''s/-/|/'\'' | less'
+
+#   mans:   Search manpage given in agument '1' for term given in argument '2' (case insensitive)
+#           displays paginated result with colored search terms and two lines surrounding each hit.             Example: mans mplayer codec
+#   --------------------------------------------------------------------
+    mans () {
+        man $1 | grep -iC2 --color=always $2 | less
+    }
+
+#   -------------------------------
+#   3.  FILE AND FOLDER MANAGEMENT
+#   -------------------------------
+
+zipf () { zip -r "$1".zip "$1" ; }          # zipf:         To create a ZIP archive of a folder
+alias numFiles='echo $(ls -1 | wc -l)'      # numFiles:     Count of non-hidden files in current dir
+alias make1mb='mkfile 1m ./1MB.dat'         # make1mb:      Creates a file of 1mb size (all zeros)
+alias make5mb='mkfile 5m ./5MB.dat'         # make5mb:      Creates a file of 5mb size (all zeros)
+alias make10mb='mkfile 10m ./10MB.dat'      # make10mb:     Creates a file of 10mb size (all zeros)
+
+#   extract:  Extract most know archives with one command
+#   ---------------------------------------------------------
+    extract () {
+        if [ -f $1 ] ; then
+          case $1 in
+            *.tar.bz2)   tar xjf $1     ;;
+            *.tar.gz)    tar xzf $1     ;;
+            *.bz2)       bunzip2 $1     ;;
+            *.rar)       unrar e $1     ;;
+            *.gz)        gunzip $1      ;;
+            *.tar)       tar xf $1      ;;
+            *.tbz2)      tar xjf $1     ;;
+            *.tgz)       tar xzf $1     ;;
+            *.zip)       unzip $1       ;;
+            *.Z)         uncompress $1  ;;
+            *.7z)        7z x $1        ;;
+            *)     echo "'$1' cannot be extracted via extract()" ;;
+             esac
+         else
+             echo "'$1' is not a valid file"
+         fi
+    }
+
+
+#   ---------------------------
+#   4.  SEARCHING
+#   ---------------------------
+
+alias qfind="find . -name "                 # qfind:    Quickly search for file
+ff () { /usr/bin/find . -name "$@" ; }      # ff:       Find file under the current directory
+ffs () { /usr/bin/find . -name "$@"'*' ; }  # ffs:      Find file whose name starts with a given string
+ffe () { /usr/bin/find . -name '*'"$@" ; }  # ffe:      Find file whose name ends with a given string
+
+
+#   ---------------------------
+#   5.  PROCESS MANAGEMENT
+#   ---------------------------
+
+#   findPid: find out the pid of a specified process
+#   -----------------------------------------------------
+#       Note that the command name can be specified via a regex
+#       E.g. findPid '/d$/' finds pids of all processes with names ending in 'd'
+#       Without the 'sudo' it will only find processes of the current user
+#   -----------------------------------------------------
+    findPid () { lsof -t -c "$@" ; }
+
+#   memHogsTop, memHogsPs:  Find memory hogs
+#   -----------------------------------------------------
+    alias memHogsTop='top -l 1 -o rsize | head -20'
+    alias memHogsPs='ps wwaxm -o pid,stat,vsize,rss,time,command | head -10'
+
+#   cpuHogs:  Find CPU hogs
+#   -----------------------------------------------------
+    alias cpu_hogs='ps wwaxr -o pid,stat,%cpu,time,command | head -10'
+
+#   topForever:  Continual 'top' listing (every 10 seconds)
+#   -----------------------------------------------------
+    alias topForever='top -l 9999999 -s 10 -o cpu'
+
+#   ttop:  Recommended 'top' invocation to minimize resources
+#   ------------------------------------------------------------
+    alias ttop="top -R -F -s 10 -o rsize"
+
+#   my_ps: List processes owned by my user:
+#   ------------------------------------------------------------
+    my_ps() { ps $@ -u $USER -o pid,%cpu,%mem,start,time,bsdtime,command ; }
+
+
+#   ---------------------------
+#   6.  NETWORKING
+#   ---------------------------
+
+alias myip='curl ip.appspot.com'                    # myip:         Public facing IP Address
+alias netCons='lsof -i'                             # netCons:      Show all open TCP/IP sockets
+alias lsock='sudo /usr/sbin/lsof -i -P'             # lsock:        Display open sockets
+alias lsockU='sudo /usr/sbin/lsof -nP | grep UDP'   # lsockU:       Display only open UDP sockets
+alias lsockT='sudo /usr/sbin/lsof -nP | grep TCP'   # lsockT:       Display only open TCP sockets
+alias ipInfo0='ipconfig getpacket en0'              # ipInfo0:      Get info on connections for en0
+alias ipInfo1='ipconfig getpacket en1'              # ipInfo1:      Get info on connections for en1
+alias openPorts='sudo lsof -i | grep LISTEN'        # openPorts:    All listening connections
+alias showBlocked='sudo ipfw list'                  # showBlocked:  All ipfw rules inc/ blocked IPs
+
+#   ii:  display useful host related informaton
+#   -------------------------------------------------------------------
+    ii() {
+        echo -e "\nYou are logged on ${RED}$HOST"
+        echo -e "\nAdditionnal information:$NC " ; uname -a
+        echo -e "\n${RED}Users logged on:$NC " ; w -h
+        echo -e "\n${RED}Current date :$NC " ; date
+        echo -e "\n${RED}Machine stats :$NC " ; uptime
+        echo -e "\n${RED}Current network location :$NC " ; scselect
+        echo -e "\n${RED}Public facing IP Address :$NC " ;myip
+        #echo -e "\n${RED}DNS Configuration:$NC " ; scutil --dns
+        echo
+    }
+
+
+#   ---------------------------------------
+#   7.  SYSTEMS OPERATIONS & INFORMATION
+#   ---------------------------------------
+
+alias mountReadWrite='/sbin/mount -uw /'    # mountReadWrite:   For use when booted into single-user
+
+#   ---------------------------------------
+#   8.  DEVELOPMENT
+#   ---------------------------------------
+
+alias gitlp="git log --graph --pretty --all"
+alias gitld="git log --graph --decorate --all"
+alias git-edit-comment="git commit --amend"
+alias git-prune-origin="git remote prune origin"
+
+git-permissions() {
+    git update-index --chmod=$1 $2
+}
+
+git-squash() {
+    git rebase -i HEAD~$1
+}
+
+httpHeaders () { /usr/bin/curl -I -L $@ ; }             # httpHeaders:      Grabs headers from web page
+
+#   httpDebug:  Download a web page and show info on what took time
+#   -------------------------------------------------------------------
+    httpDebug () { /usr/bin/curl $@ -o /dev/null -w "dns: %{time_namelookup} connect: %{time_connect} pretransfer: %{time_pretransfer} starttransfer: %{time_starttransfer} total: %{time_total}\n" ; }
+
+
+#   ---------------------------------------
+#   9.  AUTO COMPLETIONS
+#   ---------------------------------------
+
+for file in ~/bin/bash_completions/*; do
+    [ -r "$file" ] && . "$file"
+done; unset file
+
+
+#   ---------------------------------------
+#   10.  REMINDERS & NOTES
+#   ---------------------------------------

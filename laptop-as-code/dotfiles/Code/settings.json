@@ -1,0 +1,33 @@
+{
+    // Format a file on save. A formatter must be available, the file must not be auto-saved, and editor must not be shutting down.
+    // "editor.formatOnSave": true,
+
+    "window.zoomLevel": 1,
+
+    // Configure glob patterns for excluding files and folders.
+    "files.exclude": {
+        "**/.git": true,
+        "**/.idea": true,
+        "**/.settings": true,
+        "**/.mvn": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/.classpath": true,
+        "**/.project": true,
+        "**/.factorypath": true
+    },
+    // Configure glob patterns for excluding files and folders in searches. Inherits all glob patterns from the files.exclude setting.
+    "search.exclude": {
+        "**/node": true,
+        "**/node_modules": true,
+        "**/bower_components": true,
+        "**/target": true,
+        "**/dist": true,
+        "**/build": true
+    },
+
+    "telemetry.enableTelemetry": false,
+    "telemetry.enableCrashReporter": false
+}
