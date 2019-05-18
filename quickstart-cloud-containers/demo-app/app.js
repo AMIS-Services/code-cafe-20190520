@@ -8,9 +8,6 @@ const flash = require("express-flash");
 const session = require("express-session");
 const bodyParser = require("body-parser");
 
-const mysql = require("mysql");
-const connection = require("./lib/db");
-
 const indexRouter = require("./routes/index");
 const customersRouter = require("./routes/customers");
 
