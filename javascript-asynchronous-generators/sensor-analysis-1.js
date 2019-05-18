@@ -1,3 +1,7 @@
+// Time Windowed aggregates: averages produced every X seconds.
+// similar to sensor-analysis-0.js; however, in this this program, Function timeWindowedAggregates() is triggered by a time out after a period specified by parameter timeWindow.
+// When the function ‘wakes up’ , it reads the current contents from the cache, calculates and yields the averages. 
+
 const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, Math.floor(milliseconds)))
 }
@@ -129,6 +133,6 @@ doIt2 = async function () {
     }
 }
 
-doIt()
-doIt2()
+doIt() // function that processes sensor values and produces aggregates after a fixed number of new readings
+doIt2() // function that produces aggregates after a specified amount of time -leveraging values written to cache  recordedValues by function runningSensorAverages
 

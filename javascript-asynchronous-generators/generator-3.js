@@ -1,3 +1,6 @@
+// more pipelining - with some additional delay in the 2nd and 3rd function in the pipeline; this represents each of these functions
+// doing some real work on the results.
+
 const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
 }

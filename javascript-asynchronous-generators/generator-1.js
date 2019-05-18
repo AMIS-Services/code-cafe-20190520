@@ -1,3 +1,4 @@
+// chaining or pipelining (three) generator functions - each result is piped from alphabet to vowelFilter to capitalize and finally to the for-loop
 
 const alphabet = function* () {
     var n = 0
