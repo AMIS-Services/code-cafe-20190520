@@ -1,3 +1,5 @@
+// introducing Promise.all and Promise.race for parallel Promise evaluation
+
 promiseToProduceARandomNumber = function () { 
     const myPledge = new Promise(function(resolve, reject) {
                                     const random = Math.random()

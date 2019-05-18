@@ -6,12 +6,12 @@ To follow along the code samples in this hands on, you will need a recent Node r
 * install a local Node runtime on your laptop, git clone the repository and run the *.js files (for example from Visual Studio Code)
 * run a Docker Container based on the Node image, for example:
     * `docker run --name=node -it node:12 /bin/sh`, 
-    * then clone the GitHub repo with `git clone https://github.com/AMIS-Services/code-cafe-20190520`, 
+    * then (on the Linux command line inside the container) clone the GitHub repo with `git clone https://github.com/AMIS-Services/code-cafe-20190520`, 
     * cd into the right folder `cd code-cafe-20190520/javascript-asynchronous-generators`
     * and run the various *.js files
 * make use of a cloud based runtime environment, for example
-    * Go to [Katacoda - NodeJS playground](https://www.katacoda.com/kameshveera3/scenarios/2) and clone the GitHub repo with `git clone https://github.com/AMIS-Services/code-cafe-20190520`, cd into the right folder `cd code-cafe-20190520/javascript-asynchronous-generators` and run the various *.js files; 
-    * Go to [Paiza Cloud](https://paiza.cloud/containers); start a Node server; git clone the repository and run the files.
+    * Go for example to [Katacoda - NodeJS playground](https://www.katacoda.com/kameshveera3/scenarios/2) and clone the GitHub repo with `git clone https://github.com/AMIS-Services/code-cafe-20190520`, cd into the right folder `cd code-cafe-20190520/javascript-asynchronous-generators` and run the various *.js files; 
+    * Or go to [Paiza Cloud](https://paiza.cloud/containers); start a Node server; git clone the repository and run the files.
 
 ## Recap of Promises
 A Promise [in JavaScript] is like a coupon, voucher or claim tag (Gutschein, IOU, Consumptiebon): it is light weight and easily acquired and it holds the promise of a future result. That future result is the outcome of an asynchronous action. If you are new to Promises, this is a very clear, straightforward tutorial [https://javascript.info/promise-basics].

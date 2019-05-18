@@ -1,3 +1,6 @@
+// demonstrating a collection of Promises, executed in parallel
+// each result is delivered as quickly as possible - using Promise.race - and all results eventually are used - by looping over all remaining promises and reapplying Promise.race
+
 promiseToProduceARandomNumber = function () {
   const myPledge = new Promise(function (resolve, reject) {
     const random = Math.random()
