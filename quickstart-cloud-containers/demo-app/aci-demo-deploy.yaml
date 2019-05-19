@@ -1,0 +1,59 @@
+apiVersion: 2018-10-01
+location: westeurope
+name: demo-app-2
+properties:
+  containers:
+  - name: db
+    properties:
+      image: mysql
+      resources:
+        requests:
+          cpu: 1
+          memoryInGb: 1.5
+      volumeMounts:
+      - name: dbfileshare
+        mountPath: /var/lib/mysql
+      environmentVariables:
+        - "name": "MYSQL_ROOT_PASSWORD"
+          "secureValue": "secret"
+        - "name": "MYSQL_DATABASE"
+          "value": "db"
+        - "name": "MYSQL_USER"
+          "value": "db_user"
+        - "name": "MYSQL_PASSWORD"
+          "secureValue": "dbpwd123"
+      ports:
+      - port: 3306
+  - name: webapp
+    properties:
+      image: codecaferegistry1.azurecr.io/demo-app:1.0
+      resources:
+        requests:
+          cpu: 1
+          memoryInGb: 1.5
+      ports:
+      - port: 8080
+      environmentVariables:
+        - "name": "DB_HOST"
+          "secureValue": "127.0.0.1"
+        - "name": "DB_PORT"
+          "secureValue": "3306"
+  osType: Linux
+  volumes:
+    - name: dbfileshare
+      azureFile:
+        shareName: dbfileshare
+        storageAccountName: sadb001files
+        storageAccountKey: accountkey
+  imageRegistryCredentials:
+    - server: codecaferegistry1.azurecr.io
+      username: codecaferegistry1
+      password: acrpassword
+  ipAddress:
+    type: Public
+    ports:
+    - protocol: tcp
+      port: '8080'
+    dnsNameLabel: "demoapp2"
+tags: null
+type: Microsoft.ContainerInstance/containerGroups

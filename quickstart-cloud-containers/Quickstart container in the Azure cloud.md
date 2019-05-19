@@ -315,13 +315,13 @@ First we will create (new) one. This can be done using the Azure Portal or by us
 
 Open a command prompt / terminal window if not yet open and type:
 
-`az acr create --resource-group containertest--name codecaferegistry1 --sku Basic`.
+`az acr create --resource-group containertest --name codecaferegistry1 --sku Basic`.
 
 The registry name **must be unique within Azure**, and contain 5-50 alphanumeric characters. So maybe you need to use another name.
 
 When the registry is created, you get some output. Take note of `loginServer` in the output, which is the fully qualified registry name (all lowercase). 
 
-Before pushing and pulling container images, you must log in to the registry. Type: `az acr login --name <name of the registry>`.
+Before pushing and pulling container images, you must log in to the registry. Type: `az acr login --name codecaferegistry1`.
 
 Navigate to the demo-app folder.
 
@@ -345,16 +345,16 @@ You can also check it in the Azure portal by navigating to the Container registr
 
 Using ACR Task the source code is pushed to Azure. You can also push only the image. In that case, you first build the image and tag it with the remote docker registry and then push it.
 
-Build and tag the image: `docker build --rm -f "Dockerfile" -t codecaferegistry1.azurecr.io/demo-app:1.1 .`
+Build and tag the image: `docker build --rm -f "Dockerfile" -t codecaferegistry1.azurecr.io/demo-app:1.0 .`
 
-Push the image: `docker push codecaferegistry1.azurecr.io/demo-app:1.1`
+Push the image: `docker push codecaferegistry1.azurecr.io/demo-app:1.0`
 
 Now let's create a container based on our own image.
 
 Type:
 
 ``````bash
-az container create --resource-group containertest --location westeurope --name demoapp --image codecaferegistry1.azurecr.io/demo-app:1.1 --ip-address public --port 8080 --cpu 1 --memory 1.5 --dns-name-label demoapp --environment-variables DB_HOST=mydb2.westeurope.azurecontainer.io DB_PORT=3306
+az container create --resource-group containertest --location westeurope --name demoapp --image codecaferegistry1.azurecr.io/demo-app:1.0 --ip-address public --port 8080 --cpu 1 --memory 1.5 --dns-name-label demoapp --environment-variables DB_HOST=mydb2.westeurope.azurecontainer.io DB_PORT=3306
 ``````
 
 Oh oh, that didn't work. We need a username and password.
@@ -366,8 +366,26 @@ In the Azure Portal navigate to your container registry. Go to the 'Access keys'
 Now try again:
 
 ```bash
-az container create --resource-group containertest --location westeurope --name demoapp --image codecaferegistry1.azurecr.io/demo-app:1.1 --ip-address public --port 8080 --cpu 1 --memory 1.5 --dns-name-label demoapp --environment-variables DB_HOST=mydb2.westeurope.azurecontainer.io DB_PORT=3306 --registry-login-server codecaferegistry1.azurecr.io --registry-username codecaferegistry1 --registry-password "<admin password>"
+az container create --resource-group containertest --location westeurope --name demoapp --image codecaferegistry1.azurecr.io/demo-app:1.0 --ip-address public --port 8080 --cpu 1 --memory 1.5 --dns-name-label demoapp --environment-variables DB_HOST=mydb2.westeurope.azurecontainer.io DB_PORT=3306 --registry-login-server codecaferegistry1.azurecr.io --registry-username codecaferegistry1 --registry-password "<admin password>"
 ```
 
 A better (and more secure) way is to use a service principal. See the [Azure Documentation](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-tutorial-quick-task) for more details how to do this.
+
+
+
+### Multi container group deployment
+
+As you may have noticed in the Azure Portal under the Container Instance, you see the tab "Containers" in plural. But until now we have only one container per instance. 
+
+It is possible to deploy multiple containers in a single instance. It is a bit more involved to do so, you need to use a deployment YAML file for this. 
+
+In the repo there is an example: `aci-demo-deploy.yaml`. This deployment YAML file will create a container instance with 2 containers: the MySQL database and the webapp and only the webapp port is exposed to the public. The exact options to use in the YAML file is not really documented, but the JSON template format is. And the YAML file is just the YAML format of the sample template. See the [Azure Template Documentation](https://docs.microsoft.com/en-us/azure/templates/microsoft.containerinstance/2018-10-01/containergroups) for more details.
+
+Open the `aci-demo-deploy.yaml` file and update the elements to match the settings you used in the previous paragraph to create the containers, such as the container registry password and the storage account key for the file share.
+
+If the yaml file is up to date, you can deploy the container group with the following command:
+
+`az container create --resource-group containertest --file aci-demo-deploy.yaml`.
+
+*Note that you need to update the mysql password in the db container to make it work (just like you did earlier) and restart the container instance afterwards.*
 
