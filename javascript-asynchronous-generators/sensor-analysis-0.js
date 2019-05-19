@@ -1,3 +1,8 @@
+//a pipeline for producing the the average temperature value per sensor - calculated over 15 subsequent measurements per sensor and produced once every 10 values.
+// Three Promises represent three temperature sensors; in this case the values are simply generated. However, these Promises could just as well read values from an external source or consume incoming events
+// Each Promise when resolved produces a sensor readout.
+// 
+
 const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, Math.floor(milliseconds)))
 }
@@ -57,6 +62,16 @@ sensorValues = async function* () {
 }// sensorValues
 
 
+
+filterOutliersFromSensorReadings = async function* (sensorReadings) {
+    for await (sensorReading of sensorReadings) {
+       if (sensorReading.temperature < 273 || sensorReading.sensor == 'sensor-x')
+         lg(`Sensor Reading filtered ${JSON.stringify(sensorReading)}`); //filter this reading
+       else  
+         yield sensorReading
+    }// for sensorReadings
+}// filterOutliersFromSensorReadings    
+
 // windowSize defines the number of values used for the calculation of the average
 // period defines the number of values after which a new value should be produced
 runningSensorAverages = async function* (sensorReadings, windowSize, period) {
@@ -84,15 +99,6 @@ runningSensorAverages = async function* (sensorReadings, windowSize, period) {
         }
     }
 }// runningSensorAverages    
-
-filterOutliersFromSensorReadings = async function* (sensorReadings) {
-    for await (sensorReading of sensorReadings) {
-       if (sensorReading.temperature < 273 || sensorReading.sensor == 'sensor-x')
-         lg(`Sensor Reading filtered ${JSON.stringify(sensorReading)}`); //filter this reading
-       else  
-         yield sensorReading
-    }// for sensorReadings
-}// filterOutliersFromSensorReadings    
 
 
 // produce runningAverage over the sensorValues() once every 10 readings, using 15 readings to calculate the average 

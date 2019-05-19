@@ -1,3 +1,6 @@
+// introducing function sleep that returns a Promise that takes a specified time before resolution
+// also: see promise chaining in action ; the next promise is prepared when the previous one resolves 
+
 promiseToProduceARandomNumber = function () { 
     const myPledge = new Promise(function(resolve, reject) {
                                     const random = Math.random()

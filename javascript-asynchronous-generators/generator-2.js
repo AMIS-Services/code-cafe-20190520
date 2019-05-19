@@ -1,3 +1,11 @@
+// a generator function can be asynchronous - 
+// here we see the same example as in generator-1.js, this time with the async syntax (async and await)
+// and a little delay in function alphabet()
+// this results in pipelining: function capitalize returns the first results (printed in doIt())
+// while function alphabet is still working on more results. All three generator functions are part of the same pipeline
+// where they work in parallel, one chewing on initial results of their predecessor. Time to first end result is reduced substantially,
+// time to produce all results is also reduced (at least a little).
+
 const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
 }

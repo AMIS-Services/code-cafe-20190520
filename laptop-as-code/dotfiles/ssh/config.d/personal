@@ -1,0 +1,2 @@
+Host github.com
+    IdentityFile /dotfiles/ssh/keys/github_rsa.key

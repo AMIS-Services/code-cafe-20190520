@@ -7,7 +7,7 @@ const numberOfGuests = 8
 // assuming each guest eats exactly three pancakes
 const totalNumberOfPancakes = numberOfGuests * 3
 
-const numberOfPans = 1
+const numberOfPans = 4
 
 // times in milliseconds
 const timeToBakeOnePancake = 3000;

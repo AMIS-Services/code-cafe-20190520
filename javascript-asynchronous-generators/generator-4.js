@@ -1,3 +1,8 @@
+// here we see pipelining in action using Promises: 
+// The first results from function Capitalize are returned while function alphabet is still producing and yielding new values
+// using many Promises - with all promises pending at the same time, and each result yielded as soon as the Promise as resolved.
+// the use of async generator function with the Promise.race allows us to return results one by one and allowing parallel processing.
+
 sleep = function (delay, result) {
     const sleepPromise = new Promise(function (resolve, reject) {
       setTimeout(() => {
@@ -13,8 +18,11 @@ const lg = (msg) => {
     console.log(`${d.getSeconds()}:${d.getMilliseconds()}  - ${msg}`)
 }
 
-const produceLetterDelay = 300
+const produceLetterDelay = 200
 
+// function alphabet produces all letters in the alphabet. Each letter is produced when a Promise resolves (after a a certain delay)
+// in order to yield values as soon as they become available, all letter promises are held in a set that is input for Promise.race.
+// as soon as one promise is resolved, its value is yielded; that promise is removed from the set and the race is on again (waiting for the next letterpromise to resolve)
 const alphabet = async function* () {
     var n = 0
     var letterPromises= new Set()
@@ -23,7 +31,8 @@ const alphabet = async function* () {
        letterPromises.add( 
             // alternative line with randomized delay: 
             // new Promise(resolve => {  sleep( produceLetterDelay * (0.5+ Math.random()),n++)
-            new Promise(resolve => {  sleep(produceLetterDelay,n++)
+            // the time to produce a letter is artifically increased for each letter; note: all promises start processing at almost the same time
+            new Promise(resolve => {  sleep(n*produceLetterDelay,n++)
                 .then((value)=> {
                                                           var letter = String.fromCharCode(97 + value)
                                                           lg(`Letter ${letter} is produced` )
@@ -31,7 +40,8 @@ const alphabet = async function* () {
                                                         })
                                    }
                        )) 
-            await sleep(10)
+            // a little pause between creating letterPromises            
+            await sleep(20)
     }//while
       // wrap each promise in an additional promise that ensures that the promise is removed from the pool letterPromises after resolving, while its value is retained in letterValues 
     letterPromises.forEach((promise, i) => {
@@ -41,6 +51,7 @@ const alphabet = async function* () {
       });
     });
     lg(`let's wait for letter promises to resolve`)
+    // loop for as long as there are letterValues to be returned or letterPromises to resolve (resulting in letterValues)
     while (letterValues.size>0 || letterPromises.size > 0) {
       if (letterValues.size > 0 ) {
         var nextValue = letterValues.values().next().value
@@ -66,7 +77,7 @@ const isVowel = function (letter) {
 
 const vowelFilter = async function* (letters) {
     for await (let letter of letters) {
-      await sleep(400)
+      await sleep(200)
       if (!isVowel(letter)) yield letter.toUpperCase();
     }  
 }

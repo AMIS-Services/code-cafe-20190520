@@ -1,3 +1,5 @@
+// introducing await - as a means to control synchronous processing amidst asynchronous function calls 
+
 let promiseToProduceARandomNumber = function () { 
     const myPledge = new Promise(function(resolve, reject) {
                                     const random = Math.random()
