@@ -10,6 +10,8 @@ To be able to run this quickstart, you need to have the following components:
 
 * On your laptop: 
   * Docker (for Windows or Mac) <https://www.docker.com/products/docker-desktop>
+  * Docker running on Linux VM, such as we already used before: VirtualBox with Ubuntu VM
+    and Docker Engine
   * Azure CLI <https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest>
 * In the cloud: access to an Azure cloud subscription. You can create a free account at [https://azure.microsoft.com/en-us/free](https://azure.microsoft.com/en-us/free/)[/](https://azure.microsoft.com/en-us/free/) 
 
@@ -20,6 +22,10 @@ To be able to run this quickstart, you need to have the following components:
 We start with using public available images on Docker Hub and see the difference between running it locally and the same in the cloud.
 
 We will use 2 images: MySQL and PHPMyAdmin. The latter image is a web application which is an administration tool for MySQL (or MariaDB) which is used by many web hosting providers.
+
+
+
+If you want you can run the Docker images also locally, otherwise skip to the Azure cloud paragraph.
 
 
 
@@ -228,16 +234,16 @@ Next we create a storage account to store our files for the mysql container:
 
 `az storage account create --name sadb001files --resource-group containertest --sku Standard_LRS` (use any name you like, but only lowercase alphanumeric characters are allowed).
 
-Next create a file share on this account which we will use a a volume mount for the container. You need the connection string to the created storage account for this. You can either find it in the azure portal or use the following azure cli command: `az storage account show-connection-string --name sadbfiles --resource-group containertest -o tsv`.
+Next create a file share on this account which we will use a a volume mount for the container. You need the connection string to the created storage account for this. You can either find it in the azure portal or use the following azure cli command: `az storage account show-connection-string --name sadb001files --resource-group containertest -o tsv`.
 
 `az storage share create --name dbfileshare --connection-string "..."` (note that the connection string must be enclosed by quotes).
 
-For the volume mount you need the account key for the storage. Use the following azure cli command to retrieve this: `az storage account keys list --resource-group containertest --account-name sadbfiles --query "[0].value" --output tsv`.
+For the volume mount you need the account key for the storage. Use the following azure cli command to retrieve this: `az storage account keys list --resource-group containertest --account-name sadb001files --query "[0].value" --output tsv`.
 
 Next we will create the MySQL container:
 
 ```bash
-az container create --resource-group containertest --location westeurope --name db2 --image mysql --ip-address public --port 3306 --cpu 1 --memory 1.5 --dns-name-label db2 --environment-variables MYSQL_ROOT_PASSWORD=secretpasspass MYSQL_DATABASE=db MYSQL_USER=db_user MYSQL_PASSWORD=dbpwd123 --azure-file-volume-account-name sadbfiles --azure-file-volume-account-key "..." --azure-file-volume-share-name dbfileshare --azure-file-volume-mount-path /var/lib/mysql
+az container create --resource-group containertest --location westeurope --name db2 --image mysql --ip-address public --port 3306 --cpu 1 --memory 1.5 --dns-name-label mydb2  --environment-variables MYSQL_ROOT_PASSWORD="secret" MYSQL_DATABASE="db" MYSQL_USER="db_user" MYSQL_PASSWORD="dbpwd123" --azure-file-volume-account-name sadb001files  --azure-file-volume-account-key "..." --azure-file-volume-share-name dbfileshare --azure-file-volume-mount-path /var/lib/mysql
 ```
 
 And create the PHPMyAdmin container:
@@ -257,3 +263,111 @@ And do the same with the mysql container you created using the portal.
 You should see that the second created container still has its data and the first one does not.
 
 > **There is one major note to mention: the container are now running in the cloud and can be accessed over the internet, so if you want to run these containers for a longer period of time you MUST add security measurements!** 
+
+
+
+## Use your own containers
+
+We now have seen that is relative simple to use public available Docker containers. Now we do the same when you have your own build container.
+
+In the repository inside the subfolder `demo-app` there is a NodeJS webapp which connects to a MySQL database to add, update and delete some data. You should download the [code-cafe repo](https://github.com/AMIS-Services/code-cafe-20190520) to your machine to get this to work.
+
+
+
+### Running it locally using Docker
+
+To get it to work locally you need the MySQL Docker container from the previous paragraph. 
+
+Open a command prompt or terminal window.
+
+Check if the MySQL container is running: `docker ps`. If it is not yet running open a command prompt / terminal and type: `docker start <name of container>`.
+
+Change the directory to the `demo-app` folder and type: `docker build --rm -f "Dockerfile" -t demo-app:latest .`. This command will create a new Docker image locally, named: `demo-app` with tag: `latest`. You can check this by typing `docker image ls demo-app` after the image is created.
+
+Check if the container works by typing: `docker run --rm --name demoapp -p 8080:8080 --link db1:db1 demo-app:latest`.` *Note: db1 is the name of the docker container running MySQL.*
+
+You should see something like:
+
+```
+$ docker run --rm --name demoapp -p 8080:8080 --link db1:db1 demo-app:latest
+
+> demo-app@0.0.0 start /app
+> node ./bin/www
+
+Executing (default): CREATE TABLE IF NOT EXISTS `Customers` (`id` INTEGER auto_increment , `name` VARCHAR(255), `email` VARCHAR(255), `date_created` DATETIME
+DEFAULT NOW(), `date_updated` DATETIME, PRIMARY KEY (`id`)) ENGINE=InnoDB;
+Executing (default): SHOW INDEX FROM `Customers` FROM `db`
+```
+
+If you open a web browser and navigate to http://localhost:8080/customers you should see the application.
+
+![](V:\code-cafe-20190520\quickstart-cloud-containers\img\demoapp_localhost_home.png)
+
+
+
+### Running it in Azure Cloud
+
+Next we get it working in the Azure Cloud.
+
+In the local version the image was created in the local Docker registry. But we can not access that from the Azure Cloud. So we need to put our built image in a Docker registry accessible from Azure. We will use the Azure Container Registry (ACR) for this. ACR is a Docker registry within your Azure subscription.
+
+First we will create (new) one. This can be done using the Azure Portal or by using Azure CLI commands. We will use the latter.
+
+Open a command prompt / terminal window if not yet open and type:
+
+`az acr create --resource-group containertest--name codecaferegistry1 --sku Basic`.
+
+The registry name **must be unique within Azure**, and contain 5-50 alphanumeric characters. So maybe you need to use another name.
+
+When the registry is created, you get some output. Take note of `loginServer` in the output, which is the fully qualified registry name (all lowercase). 
+
+Before pushing and pulling container images, you must log in to the registry. Type: `az acr login --name <name of the registry>`.
+
+Navigate to the demo-app folder.
+
+#### Building the image
+
+You can either start the Docker build process on Azure using ACR Tasks or build the image first locally and push it to ACR.
+
+##### ACR Task
+
+Let try the ACR Tasks method first.
+
+Type: `az acr build --registry codecaferegistry1 --image demo-app:1.0 .` and the build process will start. The source code will be pushed to Azure for building
+
+After the build is done, type: `az acr repository list --name codecaferegistry1 --output table` to check if the image is available in your ACR.
+
+You can also check it in the Azure portal by navigating to the Container registries service.
+
+
+
+##### Build, tag and push
+
+Using ACR Task the source code is pushed to Azure. You can also push only the image. In that case, you first build the image and tag it with the remote docker registry and then push it.
+
+Build and tag the image: `docker build --rm -f "Dockerfile" -t codecaferegistry1.azurecr.io/demo-app:1.1 .`
+
+Push the image: `docker push codecaferegistry1.azurecr.io/demo-app:1.1`
+
+Now let's create a container based on our own image.
+
+Type:
+
+``````bash
+az container create --resource-group containertest --location westeurope --name demoapp --image codecaferegistry1.azurecr.io/demo-app:1.1 --ip-address public --port 8080 --cpu 1 --memory 1.5 --dns-name-label demoapp --environment-variables DB_HOST=mydb2.westeurope.azurecontainer.io DB_PORT=3306
+``````
+
+Oh oh, that didn't work. We need a username and password.
+
+The easiest (and not the best way) is to enable the admin user on registry.
+
+In the Azure Portal navigate to your container registry. Go to the 'Access keys' tab and enable the Admin user. Now you will get a username and password.
+
+Now try again:
+
+```bash
+az container create --resource-group containertest --location westeurope --name demoapp --image codecaferegistry1.azurecr.io/demo-app:1.1 --ip-address public --port 8080 --cpu 1 --memory 1.5 --dns-name-label demoapp --environment-variables DB_HOST=mydb2.westeurope.azurecontainer.io DB_PORT=3306 --registry-login-server codecaferegistry1.azurecr.io --registry-username codecaferegistry1 --registry-password "<admin password>"
+```
+
+A better (and more secure) way is to use a service principal. See the [Azure Documentation](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-tutorial-quick-task) for more details how to do this.
+
