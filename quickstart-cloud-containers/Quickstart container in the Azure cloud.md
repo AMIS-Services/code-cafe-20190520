@@ -198,7 +198,9 @@ Go to the db1 container and open the `Container` subpage and then the `Connect` 
 
 Select /bin/bash and press Connect.
 
-And perform the same steps as you have locally to update the `db_user` password.
+And perform the same steps as you have locally to update the `db_user` password: 
+
+`alter user db_user identified with mysql_native_password by 'secretuserpassword';`
 
 And log into PHPMyAdmin. You can find the url on the overview page of the dbadmin container.
 
@@ -252,7 +254,7 @@ And create the PHPMyAdmin container:
 az container create --resource-group containertest --location westeurope --name dbadmin2 --image phpmyadmin/phpmyadmin --ip-address public --port 80 --cpu 1 --memory 1.5 --dns-name-label dbadmin2 --environment-variables PMA_HOST=db2.westeurope.azurecontainer.io PMA_PORT=3306
 ```
 
-Also here: update password for the MySQL user and then try to connect using the new PHPMyAdmin container.
+Also here: update password for the MySQL user and then try to connect using the new PHPMyAdmin container: `alter user db_user identified with mysql_native_password by 'secretuserpassword';`.
 
 Create a table and add some data.
 
@@ -387,5 +389,7 @@ If the yaml file is up to date, you can deploy the container group with the foll
 
 `az container create --resource-group containertest --file aci-demo-deploy.yaml`.
 
-*Note that you need to update the mysql password in the db container to make it work (just like you did earlier) and restart the container instance afterwards.*
+*Note that you need to update the mysql password in the db container to make it work (just like you did earlier) and restart the container instance afterwards: `alter user db_user identified with mysql_native_password by 'secretuserpassword';`*
+
+
 
