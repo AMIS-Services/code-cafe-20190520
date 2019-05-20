@@ -13,7 +13,7 @@ const RechartsPie = () => {
   return (
     <div className="chart-container">
       <h2>Pie Chart</h2>
-      <ResponsiveContainer width="100%" height={400}>
+      <ResponsiveContainer width={400} height={400}>
         <PieChart>
           <Pie data={data} dataKey="percentage" nameKey="bar" label={({ index }) => data[index]["bar"]}>
             {data.map((dataPoint, index) => (
