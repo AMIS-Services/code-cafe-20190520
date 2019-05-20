@@ -172,11 +172,14 @@ Make a note of the FQDN (the DNS name the container can be accessed on). We need
 
 Now add another container for PHPMyAdmin.
 
+* container name: `dbadmin`
+* image: `phpmyadmin/phpmyadmin`
+
 ![](img/azure_create_container_phpmyadmin_1.png)
 
 On the networking tab leave the port tot 80 (currently it is not possible to map a container port to another port as we do locally).
 
-Set a DNS name label.
+Set a DNS name label, e.g. **dbadmin** (if not yet taken)
 
 Press Next.
 
@@ -185,6 +188,10 @@ On the advanced tab, add two environment settings:
 PMA_HOST = <dns name of the mysql container>
 
 PMA_PORT = 3306
+
+These settings make the connection between PHPMyAdmin and MySQL.
+
+
 
 ![](img/azure_create_container_phpmyadmin_3.png)
 
