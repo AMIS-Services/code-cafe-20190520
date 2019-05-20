@@ -1,5 +1,5 @@
 import React from "react";
-import { ResponsiveContainer, Pie, PieChart, Cell, Tooltip } from "recharts";
+import { Pie, PieChart, Cell, Tooltip } from "recharts";
 import { colorsHelper } from "../../helpers/colors";
 
 const RechartsPie = () => {
@@ -13,16 +13,14 @@ const RechartsPie = () => {
   return (
     <div className="chart-container">
       <h2>Pie Chart</h2>
-      <ResponsiveContainer width={400} height={400}>
-        <PieChart>
-          <Pie data={data} dataKey="percentage" nameKey="bar" label={({ index }) => data[index]["bar"]}>
-            {data.map((dataPoint, index) => (
-              <Cell key={dataPoint.bar} fill={colorsHelper(index)} />
-            ))}
-          </Pie>
-          <Tooltip formatter={value => `${value}%`} />
-        </PieChart>
-      </ResponsiveContainer>
+      <PieChart width={400} height={400}>
+        <Pie data={data} dataKey="percentage" nameKey="bar" label={({ index }) => data[index]["bar"]}>
+          {data.map((dataPoint, index) => (
+            <Cell key={dataPoint.bar} fill={colorsHelper(index)} />
+          ))}
+        </Pie>
+        <Tooltip formatter={value => `${value}%`} />
+      </PieChart>
     </div>
   );
 };

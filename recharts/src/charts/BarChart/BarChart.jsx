@@ -1,5 +1,5 @@
 import React from "react";
-import { ResponsiveContainer, BarChart, XAxis, YAxis, Bar, Cell, CartesianGrid } from "recharts";
+import { BarChart, XAxis, YAxis, Bar, Cell, CartesianGrid } from "recharts";
 import { colorsHelper } from "../../helpers/colors";
 
 const RechartsBar = () => {
@@ -13,18 +13,16 @@ const RechartsBar = () => {
   return (
     <div className="chart-container">
       <h2>Bar Chart</h2>
-      <ResponsiveContainer width={800} height={400}>
-        <BarChart data={data}>
-          <CartesianGrid strokeDasharray="2 2" />
-          <XAxis dataKey="pie" />
-          <YAxis />
-          <Bar dataKey="percentage">
-            {data.map((_, index) => (
-              <Cell fill={colorsHelper(index)} />
-            ))}
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
+      <BarChart width={800} height={400} data={data}>
+        <CartesianGrid strokeDasharray="2 2" />
+        <XAxis dataKey="pie" />
+        <YAxis />
+        <Bar dataKey="percentage">
+          {data.map((_, index) => (
+            <Cell fill={colorsHelper(index)} />
+          ))}
+        </Bar>
+      </BarChart>
     </div>
   );
 };
