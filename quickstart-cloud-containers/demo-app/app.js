@@ -3,7 +3,6 @@ const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
-const expressValidator = require("express-validator");
 const flash = require("express-flash");
 const session = require("express-session");
 const bodyParser = require("body-parser");
@@ -12,7 +11,6 @@ const indexRouter = require("./routes/index");
 const customersRouter = require("./routes/customers");
 
 const app = express();
-
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
@@ -33,8 +31,6 @@ app.use(
 );
 
 app.use(flash());
-app.use(expressValidator());
-
 app.use("/", indexRouter);
 app.use("/customers", customersRouter);
 
